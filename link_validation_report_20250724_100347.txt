@@ -1,0 +1,358 @@
+============================================================
+🔗 TRUMP PROMISES TRACKER - LINK VALIDATION REPORT
+============================================================
+📅 Generated: 2025-07-24 10:03:47
+
+📊 SUMMARY:
+   Total Sources: 91
+   ✅ Valid Links: 20
+   ❌ Invalid Links: 27
+   ⚠️  Placeholder Links: 44
+   📈 Success Rate: 22.0%
+
+❌ INVALID LINKS (NEED FIXING):
+----------------------------------------
+   • Department of Health and Human Services
+     URL: https://www.hhs.gov/
+     Error: HTTP 403
+     Promises: 22
+
+   • Department of Health and Human Services
+     URL: https://www.hhs.gov/
+     Error: HTTP 403
+     Promises: 23
+
+   • Department of Health and Human Services
+     URL: https://www.hhs.gov/
+     Error: HTTP 403
+     Promises: 46
+
+   • Official Border Security Policy - Trump Campaign
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-completing-the-border-wall
+     Error: HTTP 404
+     Promises: 
+
+   • Trump Rally Speech - Phoenix
+     URL: https://www.c-span.org/video/?538922-1/president-trump-holds-rally-phoenix-arizona
+     Error: HTTP 404
+     Promises: 
+
+   • Healthcare Freedom Plan - Official Policy
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-bringing-down-the-cost-of-healthcare-and-prescription-drugs
+     Error: HTTP 404
+     Promises: 
+
+   • Tax Cuts and Jobs Act Extension
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-cutting-taxes-for-workers-and-small-businesses
+     Error: HTTP 404
+     Promises: 
+
+   • Economic Policy Speech - Detroit
+     URL: https://www.reuters.com/world/us/trump-economic-policy-speech-detroit-2024/
+     Error: HTTP 401
+     Promises: 
+
+   • China Trade Policy - Official Platform
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-taking-on-china
+     Error: HTTP 404
+     Promises: 
+
+   • Energy Independence Plan - Drill Baby Drill
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-unleashing-american-energy
+     Error: HTTP 404
+     Promises: 
+
+   • Energy Rally - North Dakota
+     URL: https://www.politico.com/news/2024/trump-energy-rally-north-dakota
+     Error: HTTP 403
+     Promises: 
+
+   • Military Action Against Cartels Policy
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-taking-down-the-drug-cartels
+     Error: HTTP 404
+     Promises: 
+
+   • Joe Rogan Interview - Tax Policy Discussion
+     URL: https://open.spotify.com/episode/trump-rogan-interview-2024
+     Error: HTTP 400
+     Promises: 
+
+   • Mass Deportation Plan - Official Policy
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-stopping-the-crime-and-strengthening-americas-military
+     Error: HTTP 404
+     Promises: 6
+
+   • Middle East Policy Platform
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-preventing-world-war-three
+     Error: HTTP 404
+     Promises: 7
+
+   • War on Cartels - Military Strategy
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-taking-down-the-drug-cartels
+     Error: HTTP 404
+     Promises: 
+
+   • Border Security Rally - Texas
+     URL: https://www.c-span.org/video/?trump-border-rally-texas-2024
+     Error: HTTP 404
+     Promises: 
+
+   • Immigration Reform - Merit-Based System
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-ending-birthright-citizenship
+     Error: HTTP 404
+     Promises: 63
+
+   • American Iron Dome Defense System
+     URL: https://www.donaldjtrump.com/agenda47/agenda47-constructing-an-iron-dome-missile-defense-shield-over-america
+     Error: HTTP 404
+     Promises: 
+
+   • Trump 2024 Platform - Border Security
+     URL: https://www.gop.com/about-our-party/party-platform/
+     Error: HTTP 403
+     Promises: 1
+
+   • Reuters: Trump Border Wall Plans
+     URL: https://www.reuters.com/world/us/
+     Error: HTTP 401
+     Promises: 1
+
+   • Politico: Trump Healthcare Policy
+     URL: https://www.politico.com/news/healthcare
+     Error: HTTP 403
+     Promises: 2
+
+   • Wall Street Journal: Economic Policy
+     URL: https://www.wsj.com/economy
+     Error: HTTP 401
+     Promises: 3
+
+   • Council on Foreign Relations: China Trade
+     URL: https://www.cfr.org/backgrounder/china-us-trade-war-tariffs
+     Error: HTTP 404
+     Promises: 4
+
+   • Energy Information Administration
+     URL: https://www.eia.gov/
+     Error: HTTP 503
+     Promises: 5
+
+   • Congressional Research Service
+     URL: https://crsreports.congress.gov/
+     Error: HTTP 403
+     Promises: 13
+
+   • Department of Defense: Missile Defense
+     URL: https://www.defense.gov/
+     Error: HTTP 403
+     Promises: 58
+
+⚠️  PLACEHOLDER LINKS (NEED REPLACEMENT):
+----------------------------------------
+   • Economic Plan Document
+     URL: https://example.com/deficit-plan
+     Promises: 
+
+   • Energy Independence Rally
+     URL: https://example.com/energy-rally
+     Promises: 
+
+   • Defense Policy Speech
+     URL: https://example.com/defense-speech
+     Promises: 8
+
+   • Judicial Nominations Speech
+     URL: https://example.com/judicial-speech
+     Promises: 10
+
+   • 2024 Campaign Announcement
+     URL: https://example.com/deportation-operation
+     Promises: 12
+
+   • Border Security Plan
+     URL: https://example.com/remain-in-mexico
+     Promises: 14
+
+   • Foreign Policy Interview
+     URL: https://example.com/ukraine-24-hours
+     Promises: 24
+
+   • Military Policy Speech
+     URL: https://example.com/strongest-military
+     Promises: 25
+
+   • Florida Campaign Event
+     URL: https://example.com/space-force-florida
+     Promises: 26
+
+   • Law and Order Policy
+     URL: https://example.com/national-guard-cities
+     Promises: 27
+
+   • Immigration Enforcement Plan
+     URL: https://example.com/defund-sanctuary-cities
+     Promises: 28
+
+   • Government Reform Rally
+     URL: https://example.com/deep-state-firing
+     Promises: 29
+
+   • Civil Service Reform Plan
+     URL: https://example.com/schedule-f
+     Promises: 30
+
+   • Education Policy Platform
+     URL: https://example.com/eliminate-education-dept
+     Promises: 31
+
+   • Education Reform Speech
+     URL: https://example.com/ban-crt-transgender
+     Promises: 32
+
+   • Big Tech Policy Speech
+     URL: https://example.com/break-up-big-tech
+     Promises: 33
+
+   • Truth Social Launch
+     URL: https://example.com/truth-social
+     Promises: 34
+
+   • January 6th Rally
+     URL: https://example.com/j6-pardons
+     Promises: 35
+
+   • China Policy Speech
+     URL: https://example.com/ban-chinese-ownership
+     Promises: 36
+
+   • Manufacturing Rally
+     URL: https://example.com/bring-back-manufacturing
+     Promises: 37
+
+   • Family Values Rally 2024
+     URL: https://example.com/baby-bonuses
+     Promises: 38
+
+   • Iowa Farmer Rally
+     URL: https://example.com/ban-lab-meat
+     Promises: 39
+
+   • Auto Workers Rally Michigan
+     URL: https://example.com/eliminate-ev-mandates
+     Promises: 40
+
+   • Future Cities Policy Video
+     URL: https://example.com/freedom-cities
+     Promises: 41
+
+   • Technology Leadership Speech
+     URL: https://example.com/quantum-computing
+     Promises: 42
+
+   • Immigration Reform Policy
+     URL: https://example.com/merit-based-immigration
+     Promises: 43
+
+   • Faith Leaders Summit
+     URL: https://example.com/school-prayer
+     Promises: 44
+
+   • WHO Criticism Rally
+     URL: https://example.com/withdraw-who
+     Promises: 45
+
+   • Heroes Garden Executive Order
+     URL: https://example.com/heroes-garden
+     Promises: 47
+
+   • Transportation Innovation Speech
+     URL: https://example.com/flying-cars
+     Promises: 48
+
+   • Media Bias Rally
+     URL: https://example.com/defund-npr-pbs
+     Promises: 49
+
+   • TikTok Ban Executive Order
+     URL: https://example.com/tiktok-ban
+     Promises: 50
+
+   • Education Policy Interview
+     URL: https://example.com/cancel-student-debt-relief
+     Promises: 52
+
+   • Military Policy Statement
+     URL: https://example.com/reinstate-military-unvaccinated
+     Promises: 53
+
+   • Homelessness Policy Speech
+     URL: https://example.com/tent-cities-homeless
+     Promises: 54
+
+   • Women's Sports Rally
+     URL: https://example.com/ban-trans-athletes
+     Promises: 55
+
+   • Energy Independence Speech
+     URL: https://example.com/end-climate-regulations
+     Promises: 57
+
+   • Missile Defense Policy
+     URL: https://example.com/american-iron-dome
+     Promises: 
+
+   • School Choice Policy Platform
+     URL: https://example.com/school-choice-esa
+     Promises: 59
+
+   • Revolving Door Reform
+     URL: https://example.com/ban-tech-revolving-door
+     Promises: 60
+
+   • Patriotic Education Commission
+     URL: https://example.com/patriotic-education
+     Promises: 61
+
+   • Climate Policy Statement
+     URL: https://example.com/paris-withdrawal-again
+     Promises: 62
+
+   • Real Estate Investment Immigration
+     URL: https://example.com/visa-home-buyers
+     Promises: 
+
+   • Border Security Policy
+     URL: https://example.com/cartels-terrorist-designation
+     Promises: 
+
+✅ WORKING LINKS (SAMPLE):
+----------------------------------------
+   • Office of the United States Trade Representative
+     URL: https://ustr.gov/
+     Status: 200
+
+   • Department of Homeland Security - Border Security
+     URL: https://www.dhs.gov/topic/border-security
+     Status: 200
+
+   • Internal Revenue Service - Tax Information
+     URL: https://www.irs.gov/
+     Status: 200
+
+   • Internal Revenue Service - Tax Information
+     URL: https://www.irs.gov/
+     Status: 200
+
+   • Internal Revenue Service - Tax Information
+     URL: https://www.irs.gov/
+     Status: 200
+
+   ... and 15 more working links
+
+🔧 RECOMMENDATIONS:
+----------------------------------------
+   1. Fix or replace invalid links immediately
+   2. Replace placeholder URLs with real sources
+   3. Improve overall link quality - target 90%+ success rate
+
+============================================================

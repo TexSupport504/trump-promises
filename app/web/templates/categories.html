@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Categories - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-tags text-primary"></i>
+                Promise Categories
+            </h1>
+            <p class="text-muted mb-4">Browse Trump's campaign promises organized by policy area.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">
+                            <i class="fas fa-folder text-primary me-2"></i>
+                            {{ category.name }}
+                        </h5>
+                        <span class="badge badge-primary">{{ category.count }}</span>
+                    </div>
+                    
+                    <p class="card-text text-muted">
+                        {% if category.name == 'Immigration' %}
+                            Border security, deportation, and immigration reform promises
+                        {% elif category.name == 'Economy' %}
+                            Economic policy, job creation, and trade promises
+                        {% elif category.name == 'Healthcare' %}
+                            Health insurance, Medicare, and medical policy promises
+                        {% elif category.name == 'Foreign Policy' %}
+                            International relations and diplomatic promises
+                        {% elif category.name == 'Tax Policy' %}
+                            Tax cuts, reforms, and revenue promises
+                        {% elif category.name == 'Energy' %}
+                            Oil, gas, coal, and energy independence promises
+                        {% elif category.name == 'Defense' %}
+                            Military, veterans, and national security promises
+                        {% elif category.name == 'Education' %}
+                            School policy, curriculum, and education reform promises
+                        {% elif category.name == 'Technology' %}
+                            Big Tech, innovation, and digital policy promises
+                        {% elif category.name == 'Environment' %}
+                            Climate, regulations, and environmental promises
+                        {% elif category.name == 'Transportation' %}
+                            Infrastructure, vehicles, and transport promises
+                        {% elif category.name == 'Social Issues' %}
+                            Cultural, family, and social policy promises
+                        {% else %}
+                            View all promises in the {{ category.name }} category
+                        {% endif %}
+                    </p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('promises', category=category.name) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>
+                            View Promises
+                        </a>
+                        <small class="text-muted">{{ category.count }} promise{{ 's' if category.count != 1 else '' }}</small>
+                    </div>
+                </div>
+                
+                <!-- Progress indicator -->
+                {% if category.fulfillment_rate is defined %}
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Fulfillment Rate:</small>
+                        <div class="progress" style="width: 100px; height: 20px;">
+                            <div class="progress-bar {{ 'bg-success' if category.fulfillment_rate >= 75 else 'bg-warning' if category.fulfillment_rate >= 25 else 'bg-danger' }}" 
+                                 role="progressbar" 
+                                 style="width: {{ category.fulfillment_rate }}%"
+                                 aria-valuenow="{{ category.fulfillment_rate }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ category.fulfillment_rate|round }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Summary section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        <i class="fas fa-chart-pie text-info me-2"></i>
+                        Category Overview
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="h4 text-primary">{{ categories|length }}</div>
+                            <small class="text-muted">Total Categories</small>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-success">{{ categories|sum(attribute='count') }}</div>
+                            <small class="text-muted">Total Promises</small>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-warning">
+                                {% if categories %}
+                                    {{ categories|max(attribute='count') }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">Largest Category</small>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-info">
+                                {% if categories|length > 0 %}
+                                    {{ (categories|sum(attribute='count') / categories|length)|round }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">Avg per Category</small>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ url_for('promises') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-list me-1"></i>
+                            View All Promises
+                        </a>
+                        <a href="{{ url_for('analytics') }}" class="btn btn-info">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            View Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

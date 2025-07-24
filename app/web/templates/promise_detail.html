@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+
+{% block title %}{{ promise.text[:50] }}... - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Promise Header -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('promises') }}">Promises</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Promise Details</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a href="{{ url_for('promises') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Promises
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promise Details Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="mb-2">{{ promise.text }}</h4>
+                            <div class="mb-2">
+                                <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'info' if promise.status == 'Partially Fulfilled' else 'danger' if promise.status == 'Broken' else 'secondary' }} mr-2">
+                                    {{ promise.status }}
+                                </span>
+                                <span class="badge badge-primary mr-2">{{ promise.category }}</span>
+                                <span class="badge badge-{{ 'danger' if promise.priority == 5 else 'warning' if promise.priority == 4 else 'info' if promise.priority == 3 else 'secondary' }}">
+                                    Priority {{ promise.priority }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="progress" style="width: 120px; height: 25px;">
+                                <div class="progress-bar progress-bar-striped 
+                                    {{ 'bg-success' if promise.progress_percentage >= 75 else 'bg-warning' if promise.progress_percentage >= 25 else 'bg-info' }}" 
+                                     role="progressbar" 
+                                     style="width: {{ promise.progress_percentage }}%"
+                                     aria-valuenow="{{ promise.progress_percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ promise.progress_percentage }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Promise Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar-plus text-primary"></i> Date Made</h6>
+                            <p class="text-muted">{{ promise.date_made.strftime('%B %d, %Y') if promise.date_made else 'Not specified' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar-edit text-success"></i> Last Updated</h6>
+                            <p class="text-muted">{{ promise.date_updated.strftime('%B %d, %Y') if promise.date_updated else 'Never updated' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    {% if promise.notes %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-sticky-note text-warning"></i> Notes</h6>
+                        <div class="alert alert-light">
+                            {{ promise.notes }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Tags -->
+                    {% if promise.tags %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-tags text-info"></i> Tags</h6>
+                        <div>
+                            {% for tag in promise.tags %}
+                                <span class="badge tag-badge mr-2 mb-2">#{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Complexity Analysis -->
+                    {% if complexity %}
+                    <div class="mb-4">
+                        <h6>
+                            <i class="fas fa-cog text-secondary"></i> Complexity Analysis
+                            <i class="fas fa-question-circle text-muted ms-2" 
+                               data-bs-toggle="modal" 
+                               data-bs-target="#complexityModal" 
+                               style="cursor: pointer;" 
+                               title="Learn how complexity is calculated"></i>
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="display-4 text-{{ 'danger' if complexity.complexity_score >= 0.8 else 'warning' if complexity.complexity_score >= 0.5 else 'success' }}">
+                                        {{ "%.1f"|format(complexity.complexity_score * 10) }}
+                                    </div>
+                                    <small class="text-muted">Complexity Score (0-10)</small>
+                                    <div class="mt-2">
+                                        <span class="badge badge-{{ 'danger' if complexity.complexity_score >= 0.8 else 'warning' if complexity.complexity_score >= 0.5 else 'success' }}">
+                                            {{ complexity.specificity_level }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <h6 class="text-muted mb-2">Analysis Factors:</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small class="text-muted">Words:</small> <strong>{{ complexity.word_count }}</strong><br>
+                                            <small class="text-muted">Specific Numbers:</small> <strong>{{ complexity.specific_numbers }}</strong><br>
+                                            <small class="text-muted">Dates:</small> <strong>{{ complexity.specific_dates }}</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">Dollar Amounts:</small> <strong>{{ complexity.specific_amounts }}</strong><br>
+                                            <small class="text-muted">Action Words:</small> <strong>{{ complexity.action_words }}</strong><br>
+                                            <small class="text-muted">Qualifier Words:</small> <strong>{{ complexity.qualifier_words }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if complexity.factors %}
+                                <div>
+                                    <h6 class="text-muted mb-2">Key Factors:</h6>
+                                    <ul class="list-unstyled">
+                                        {% for factor in complexity.factors %}
+                                            <li><i class="fas fa-chevron-right text-muted me-2"></i>{{ factor }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Sources -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-link text-primary"></i> Sources</h6>
+                </div>
+                <div class="card-body">
+                    {% if promise.sources %}
+                        {% for source in promise.sources %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6 class="mb-1">
+                                {% if source.url and not 'example.com' in source.url %}
+                                <a href="{{ source.url }}" target="_blank" class="text-decoration-none">
+                                    {{ source.title }}
+                                    <i class="fas fa-external-link-alt fa-sm ml-1"></i>
+                                </a>
+                                {% else %}
+                                {{ source.title }}
+                                <span class="badge badge-warning ml-2">Placeholder Source</span>
+                                {% endif %}
+                            </h6>
+                            <p class="text-muted small mb-1">{{ source.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge badge-outline-info">{{ source.source_type.value if source.source_type else 'Unknown' }}</span>
+                                <small class="text-muted">
+                                    {% if source.reliability_score %}
+                                        Reliability: {{ (source.reliability_score * 100)|round }}%
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% if source.date %}
+                                <small class="text-muted d-block mt-1">{{ source.date.strftime('%b %d, %Y') }}</small>
+                            {% endif %}
+                            {% if source.url and 'example.com' in source.url %}
+                                <small class="text-muted d-block mt-1">
+                                    <i class="fas fa-info-circle"></i> This is a placeholder source for demonstration purposes
+                                </small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-link fa-2x mb-2"></i>
+                            <p class="mb-0">No sources available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+                {% if similar_promises %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-search text-success"></i> Similar Promises</h6>
+                </div>
+                <div class="card-body">
+                    {% for similar_tuple in similar_promises[:3] %}
+                    {% set similar = similar_tuple[0] %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <h6 class="mb-1">
+                            <a href="{{ url_for('promise_detail', promise_id=similar.id) }}" class="text-decoration-none">
+                                {{ similar.text[:60] }}{% if similar.text|length > 60 %}...{% endif %}
+                            </a>
+                        </h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge badge-{{ 'success' if similar.status == 'Fulfilled' else 'warning' if similar.status == 'In Progress' else 'secondary' }}">
+                                {{ similar.status }}
+                            </span>
+                            <small class="text-muted">{{ similar.category }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Progress Updates Timeline -->
+    {% if progress_updates %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-timeline text-info"></i> Progress Timeline</h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for update in progress_updates %}
+                        <div class="timeline-item mb-4">
+                            <div class="row">
+                                <div class="col-md-2 text-right">
+                                    <small class="text-muted">{{ update.date.strftime('%b %d, %Y') if update.date else 'No date' }}</small>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="badge badge-{{ 'success' if update.status == 'Fulfilled' else 'warning' if update.status == 'In Progress' else 'secondary' }}">
+                                        {{ update.status }}
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1">{{ update.description }}</p>
+                                    {% if update.source_url %}
+                                        <a href="{{ update.source_url }}" target="_blank" class="small text-primary">
+                                            <i class="fas fa-external-link-alt"></i> Source
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ update.progress_percentage }}%"
+                                             aria-valuenow="{{ update.progress_percentage }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            {{ update.progress_percentage }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="mb-3">Actions</h6>
+                    <a href="{{ url_for('promises') }}" class="btn btn-primary mr-2">
+                        <i class="fas fa-list"></i> View All Promises
+                    </a>
+                    <a href="{{ url_for('analytics') }}" class="btn btn-info mr-2">
+                        <i class="fas fa-chart-bar"></i> View Analytics
+                    </a>
+                    <a href="{{ url_for('promises', category=promise.category) }}" class="btn btn-success">
+                        <i class="fas fa-filter"></i> View {{ promise.category }} Promises
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Complexity Score Explanation Modal -->
+<div class="modal fade" id="complexityModal" tabindex="-1" aria-labelledby="complexityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="complexityModalLabel">
+                    <i class="fas fa-cog text-secondary me-2"></i>
+                    Complexity Score Explained
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="lead">
+                            The Complexity Score (0-10) measures how specific and detailed a campaign promise is, 
+                            helping assess implementation difficulty and accountability.
+                        </p>
+                        
+                        <h6 class="mt-4 mb-3">How It's Calculated:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Factor</th>
+                                        <th>Weight</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Word Count</strong></td>
+                                        <td>+0.01 per word</td>
+                                        <td>Longer promises tend to be more detailed</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Specific Numbers</strong></td>
+                                        <td>+1.0 each</td>
+                                        <td>Concrete numbers (except years)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Specific Dates</strong></td>
+                                        <td>+1.5 each</td>
+                                        <td>Timeline commitments (2025, Jan 1st, etc.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dollar Amounts</strong></td>
+                                        <td>+2.0 each</td>
+                                        <td>Financial commitments ($100M, 5%, etc.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Action Words</strong></td>
+                                        <td>+1.0 each</td>
+                                        <td>"build", "create", "eliminate", "reduce"</td>
+                                    </tr>
+                                    <tr class="table-warning">
+                                        <td><strong>Qualifier Words</strong></td>
+                                        <td>-1.0 each</td>
+                                        <td>"maybe", "try", "possibly" (reduce specificity)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h6 class="mt-4 mb-3">Score Interpretation:</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-success me-2" style="width: 100px;">0-3</span>
+                                    <span>Very Vague - General statements</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-info me-2" style="width: 100px;">3-5</span>
+                                    <span>Moderate - Some specifics</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-warning me-2" style="width: 100px;">5-7</span>
+                                    <span>Specific - Clear details</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-danger me-2" style="width: 100px;">7-10</span>
+                                    <span>Very Specific - Highly detailed</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Examples:</h6>
+                                        <small>
+                                            <strong>Low (2.3):</strong> "Make America great again"<br>
+                                            <strong>Medium (5.7):</strong> "Build a border wall"<br>
+                                            <strong>High (8.9):</strong> "Cut corporate tax rate to 15% by January 2025"
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-lightbulb me-2"></i>Why This Matters:
+                            </h6>
+                            <ul class="mb-0">
+                                <li><strong>Accountability:</strong> More specific promises are easier to track and verify</li>
+                                <li><strong>Implementation:</strong> Higher complexity often means more challenging execution</li>
+                                <li><strong>Political Analysis:</strong> Helps distinguish between campaign rhetoric and concrete commitments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 16.666%;
+    top: 2rem;
+    width: 2px;
+    height: calc(100% - 1rem);
+    background-color: #dee2e6;
+}
+
+.badge-outline-info {
+    color: #17a2b8;
+    border: 1px solid #17a2b8;
+    background-color: transparent;
+}
+
+.progress-bar-striped {
+    background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+}
+
+.tag-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    font-weight: 500;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    text-transform: lowercase;
+    transition: all 0.2s ease;
+}
+
+.tag-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+</style>
+{% endblock %}

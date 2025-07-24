@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}All Promises - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-list me-2"></i>All Promises</h1>
+            <a href="{{ url_for('add_promise') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Promise
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if current_category == category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    {% for status in statuses %}
+                        <option value="{{ status }}" {% if current_status == status %}selected{% endif %}>
+                            {{ status }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary flex-fill">
+                        <i class="fas fa-filter me-1"></i>Filter
+                    </button>
+                    <a href="{{ url_for('promises') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Promises List -->
+<div class="row">
+    {% if promises %}
+        {% for promise in promises %}
+            <div class="col-12 mb-3">
+                <div class="card promise-card category-{{ promise.category.replace(' ', '-') }}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">
+                                    <a href="{{ url_for('promise_detail', promise_id=promise.id) }}" 
+                                       class="text-decoration-none">
+                                        {{ promise.text }}
+                                    </a>
+                                </h5>
+                                <div class="mb-3">
+                                    <span class="badge bg-secondary me-2">{{ promise.category }}</span>
+                                    <span class="badge status-badge
+                                        {% if promise.status.value == 'Fulfilled' %}bg-success
+                                        {% elif promise.status.value == 'In Progress' %}bg-primary
+                                        {% elif promise.status.value == 'Partially Fulfilled' %}bg-info
+                                        {% elif promise.status.value == 'Broken' %}bg-danger
+                                        {% elif promise.status.value == 'Stalled' %}bg-warning text-dark
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ promise.status.value }}
+                                    </span>
+                                    <span class="badge bg-light text-dark">Priority: {{ promise.priority }}</span>
+                                </div>
+                                <div class="mb-2">
+                                    {% if promise.tags %}
+                                        {% for tag in promise.tags %}
+                                            <span class="badge tag-badge me-1">#{{ tag }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Sources with shortened URLs -->
+                                {% if promise.sources %}
+                                <div class="mb-2">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fas fa-link me-1"></i>Sources:
+                                    </small>
+                                    {% for source in promise.sources[:2] %}
+                                        <div class="source-item mb-1">
+                                            {% if source.url and 'example.com' not in source.url %}
+                                                {% set domain = source.url.split('/')[2] if '://' in source.url else source.url %}
+                                                <a href="{{ source.url }}" target="_blank" class="text-decoration-none">
+                                                    <small class="badge badge-light border me-1">
+                                                        <i class="fas fa-external-link-alt fa-xs me-1"></i>
+                                                        {{ domain[:20] }}{% if domain|length > 20 %}...{% endif %}
+                                                    </small>
+                                                </a>
+                                            {% else %}
+                                                <small class="badge badge-warning me-1">
+                                                    <i class="fas fa-info-circle fa-xs me-1"></i>
+                                                    Demo Source
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                    {% if promise.sources|length > 2 %}
+                                        <small class="text-muted">+{{ promise.sources|length - 2 }} more</small>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Updated: {{ promise.date_updated.strftime('%Y-%m-%d') }}
+                                    {% if promise.date_made %}
+                                        | Made: {{ promise.date_made.strftime('%Y-%m-%d') }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="progress-circle bg-light border mb-2">
+                                    {{ "%.0f"|format(promise.progress_percentage) }}%
+                                </div>
+                                <div class="progress mb-2" style="height: 8px;">
+                                    <div class="progress-bar 
+                                        {% if promise.status.value == 'Fulfilled' %}bg-success
+                                        {% elif promise.status.value == 'In Progress' %}bg-primary
+                                        {% elif promise.status.value == 'Broken' %}bg-danger
+                                        {% else %}bg-info{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ promise.progress_percentage }}%"></div>
+                                </div>
+                                <div class="btn-group-sm">
+                                    <a href="{{ url_for('promise_detail', promise_id=promise.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No promises found</h4>
+                <p class="text-muted">Try adjusting your filters or <a href="{{ url_for('add_promise') }}">add a new promise</a>.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+{% if total_pages > 1 %}
+<nav aria-label="Promise pagination">
+    <ul class="pagination justify-content-center">
+        {% if has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('promises', page=page-1, category=current_category, status=current_status) }}">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            </li>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ p }}</span>
+                </li>
+            {% elif p <= 3 or p >= total_pages - 2 or (p >= page - 1 and p <= page + 1) %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('promises', page=p, category=current_category, status=current_status) }}">
+                        {{ p }}
+                    </a>
+                </li>
+            {% elif p == 4 and page > 6 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% elif p == total_pages - 3 and page < total_pages - 5 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('promises', page=page+1, category=current_category, status=current_status) }}">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<style>
+.source-item {
+    display: inline-block;
+}
+
+.source-item .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    margin-right: 0.2rem;
+}
+
+.badge-outline-secondary {
+    color: #495057;
+    border: 1px solid #007bff;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.badge-outline-secondary:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.tag-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    font-weight: 500;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    text-transform: lowercase;
+    transition: all 0.2s ease;
+}
+
+.tag-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.progress-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-left: auto;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-3">
+                <i class="fas fa-search text-primary"></i>
+                Search Results
+            </h1>
+            {% if query %}
+                <p class="text-muted mb-4">
+                    Showing results for: <strong>"{{ query }}"</strong>
+                    {% if promises %}
+                        - {{ promises|length }} promise{{ 's' if promises|length != 1 else '' }} found
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="text-muted mb-4">Enter a search term to find promises.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Search form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ url_for('search') }}" method="GET" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control form-control-lg" name="q" 
+                                   placeholder="Search promises by text, category, or tags..." 
+                                   value="{{ query }}" autofocus>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if query %}
+        {% if promises %}
+            <!-- Search results -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list text-success"></i>
+                                Found {{ promises|length }} matching promise{{ 's' if promises|length != 1 else '' }}
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Promise</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Progress</th>
+                                            <th>Priority</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for promise in promises %}
+                                        <tr>
+                                            <td>
+                                                <div class="promise-text">
+                                                    {{ promise.text[:80] }}{% if promise.text|length > 80 %}...{% endif %}
+                                                </div>
+                                                {% if promise.tags %}
+                                                    <div class="mt-1">
+                                                        {% for tag in promise.tags[:3] %}
+                                                            <span class="badge badge-light border me-1">{{ tag }}</span>
+                                                        {% endfor %}
+                                                        {% if promise.tags|length > 3 %}
+                                                            <span class="text-muted">+{{ promise.tags|length - 3 }} more</span>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-info">{{ promise.category }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'info' if promise.status == 'Partially Fulfilled' else 'danger' if promise.status == 'Broken' else 'secondary' }}">
+                                                    {{ promise.status }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="progress" style="width: 80px; height: 20px;">
+                                                    <div class="progress-bar {{ 'bg-success' if promise.progress_percentage >= 75 else 'bg-warning' if promise.progress_percentage >= 25 else 'bg-info' }}" 
+                                                         role="progressbar" 
+                                                         style="width: {{ promise.progress_percentage }}%"
+                                                         aria-valuenow="{{ promise.progress_percentage }}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">{{ promise.progress_percentage }}%</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-{{ 'danger' if promise.priority == 5 else 'warning' if promise.priority == 4 else 'info' if promise.priority == 3 else 'secondary' }}">
+                                                    P{{ promise.priority }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ url_for('promise_detail', promise_id=promise.id) }}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search tips -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                Search Tips
+                            </h6>
+                            <ul class="mb-0">
+                                <li>Search across promise text, categories, and tags</li>
+                                <li>Use specific keywords like "border", "tax", "healthcare"</li>
+                                <li>Try category names like "Immigration", "Economy", "Defense"</li>
+                                <li>Search is case-insensitive and matches partial words</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <!-- No results found -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4>No promises found</h4>
+                            <p class="text-muted mb-4">
+                                We couldn't find any promises matching "<strong>{{ query }}</strong>".
+                            </p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ url_for('search') }}" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i>Try Another Search
+                                </a>
+                                <a href="{{ url_for('promises') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-list me-1"></i>Browse All Promises
+                                </a>
+                                <a href="{{ url_for('categories') }}" class="btn btn-outline-info">
+                                    <i class="fas fa-tags me-1"></i>Browse Categories
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <!-- No search query - show search suggestions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                        <h4>Search Trump's Campaign Promises</h4>
+                        <p class="text-muted mb-4">
+                            Enter keywords to search through all {{ total_promises if total_promises else '65+' }} campaign promises.
+                        </p>
+                        
+                        <!-- Popular search suggestions -->
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3">Popular searches:</h6>
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
+                                <a href="{{ url_for('search', q='border') }}" class="btn btn-outline-primary btn-sm">border</a>
+                                <a href="{{ url_for('search', q='tax') }}" class="btn btn-outline-primary btn-sm">tax</a>
+                                <a href="{{ url_for('search', q='immigration') }}" class="btn btn-outline-primary btn-sm">immigration</a>
+                                <a href="{{ url_for('search', q='healthcare') }}" class="btn btn-outline-primary btn-sm">healthcare</a>
+                                <a href="{{ url_for('search', q='economy') }}" class="btn btn-outline-primary btn-sm">economy</a>
+                                <a href="{{ url_for('search', q='China') }}" class="btn btn-outline-primary btn-sm">China</a>
+                                <a href="{{ url_for('search', q='military') }}" class="btn btn-outline-primary btn-sm">military</a>
+                                <a href="{{ url_for('search', q='energy') }}" class="btn btn-outline-primary btn-sm">energy</a>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ url_for('promises') }}" class="btn btn-primary">
+                                <i class="fas fa-list me-1"></i>Browse All Promises
+                            </a>
+                            <a href="{{ url_for('categories') }}" class="btn btn-outline-info">
+                                <i class="fas fa-tags me-1"></i>Browse by Category
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.promise-text {
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.gap-2 > * {
+    margin: 0.25rem;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+</style>
+{% endblock %}

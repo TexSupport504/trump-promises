@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-chart-bar text-primary"></i>
+                Promise Analytics & Insights
+            </h1>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ analytics_data.total_promises }}</h4>
+                            <p class="mb-0">Total Promises</p>
+                        </div>
+                        <i class="fas fa-handshake fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ "%.1f"|format(analytics_data.fulfillment_rate) }}%</h4>
+                            <p class="mb-0">Fulfillment Rate</p>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ "%.1f"|format(analytics_data.average_progress) }}%</h4>
+                            <p class="mb-0">Average Progress</p>
+                        </div>
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ analytics_data.promises_by_category|length }}</h4>
+                            <p class="mb-0">Categories</p>
+                        </div>
+                        <i class="fas fa-tags fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Promises by Status Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie text-primary"></i>
+                        Promises by Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promises by Category Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar text-success"></i>
+                        Promises by Category
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Priority Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Promises by Priority
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priorityChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Distribution -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-area text-info"></i>
+                        Progress Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="progressChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Timeline -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock text-primary"></i>
+                        Recent Promise Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_promises %}
+                        <div class="timeline">
+                            {% for promise in recent_promises %}
+                            <div class="timeline-item mb-3">
+                                <div class="row">
+                                    <div class="col-md-2 text-muted">
+                                        <small>{{ promise.date_updated.strftime('%b %d, %Y') if promise.date_updated else 'No date' }}</small>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <strong>{{ promise.text[:80] }}{% if promise.text|length > 80 %}...{% endif %}</strong>
+                                        <br>
+                                        <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'secondary' }}">
+                                            {{ promise.status }}
+                                        </span>
+                                        <span class="badge badge-info">{{ promise.category }}</span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: {{ promise.progress_percentage }}%"
+                                                 aria-valuenow="{{ promise.progress_percentage }}" 
+                                                 aria-valuemin="0" aria-valuemax="100">
+                                                {{ promise.progress_percentage }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-clock fa-3x mb-3"></i>
+                            <p>No recent activity to display.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb text-warning"></i>
+                        Key Insights
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Most Active Category</h6>
+                            <p class="text-primary">
+                                {% if analytics_data.promises_by_category %}
+                                    {{ analytics_data.promises_by_category.keys()|list|first }}
+                                    ({{ analytics_data.promises_by_category.values()|list|first }} promises)
+                                {% else %}
+                                    No data available
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Most Common Status</h6>
+                            <p class="text-success">
+                                {% if analytics_data.promises_by_status %}
+                                    {{ analytics_data.promises_by_status.keys()|list|first }}
+                                    ({{ analytics_data.promises_by_status.values()|list|first }} promises)
+                                {% else %}
+                                    No data available
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>High Priority Promises</h6>
+                            <p class="text-danger">
+                                {{ high_priority_count }} promises marked as highest priority
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Chart.js configurations
+document.addEventListener('DOMContentLoaded', function() {
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ analytics_data.promises_by_status.keys()|list|tojson }},
+            datasets: [{
+                data: {{ analytics_data.promises_by_status.values()|list|tojson }},
+                backgroundColor: [
+                    '#28a745', // Fulfilled - Green
+                    '#ffc107', // In Progress - Yellow
+                    '#6c757d', // Not Started - Gray
+                    '#dc3545', // Broken - Red
+                    '#17a2b8', // Stalled - Blue
+                    '#fd7e14'  // Compromised - Orange
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ analytics_data.promises_by_category.keys()|list|tojson }},
+            datasets: [{
+                label: 'Number of Promises',
+                data: {{ analytics_data.promises_by_category.values()|list|tojson }},
+                backgroundColor: '#007bff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Priority Chart
+    const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+    new Chart(priorityCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ priority_data.keys()|list|tojson }},
+            datasets: [{
+                label: 'Number of Promises',
+                data: {{ priority_data.values()|list|tojson }},
+                backgroundColor: [
+                    '#28a745', // Priority 1 - Low
+                    '#17a2b8', // Priority 2
+                    '#ffc107', // Priority 3 - Medium
+                    '#fd7e14', // Priority 4
+                    '#dc3545'  // Priority 5 - High
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Progress Chart
+    const progressCtx = document.getElementById('progressChart').getContext('2d');
+    new Chart(progressCtx, {
+        type: 'line',
+        data: {
+            labels: {{ progress_data.keys()|list|tojson }},
+            datasets: [{
+                label: 'Number of Promises',
+                data: {{ progress_data.values()|list|tojson }},
+                borderColor: '#17a2b8',
+                backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

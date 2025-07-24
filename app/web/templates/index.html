@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Dashboard
+        </h1>
+    </div>
+</div>
+
+<!-- Analytics Overview -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Promises</h5>
+                        <h2 class="mb-0">{{ analytics.total_promises }}</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-handshake fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Fulfillment Rate</h5>
+                        <h2 class="mb-0">{{ "%.1f"|format(analytics.fulfillment_rate) }}%</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Avg Progress</h5>
+                        <h2 class="mb-0">{{ "%.1f"|format(analytics.average_progress) }}%</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Top Category</h5>
+                        <h6 class="mb-0">{{ analytics.most_active_categories[0] if analytics.most_active_categories else "None" }}</h6>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-tags fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Promises by Status</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Promises by Category</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Promises -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Promises</h5>
+                <a href="{{ url_for('promises') }}" class="btn btn-sm btn-outline-primary">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_promises %}
+                    {% for promise in recent_promises %}
+                        <div class="card promise-card mb-3 category-{{ promise.category.replace(' ', '-') }}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">
+                                            <a href="{{ url_for('promise_detail', promise_id=promise.id) }}" class="text-decoration-none">
+                                                {{ promise.text[:100] }}{% if promise.text|length > 100 %}...{% endif %}
+                                            </a>
+                                        </h6>
+                                        <div class="mb-2">
+                                            <span class="badge bg-secondary me-2">{{ promise.category }}</span>
+                                            <span class="badge status-badge
+                                                {% if promise.status.value == 'Fulfilled' %}bg-success
+                                                {% elif promise.status.value == 'In Progress' %}bg-primary
+                                                {% elif promise.status.value == 'Broken' %}bg-danger
+                                                {% else %}bg-warning text-dark{% endif %}">
+                                                {{ promise.status.value }}
+                                            </span>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Updated: {{ promise.date_updated.strftime('%Y-%m-%d') }}
+                                            {% if promise.sources %}
+                                                | <i class="fas fa-link me-1"></i>{{ promise.sources|length }} source(s)
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="progress-circle bg-light border">
+                                            {{ "%.0f"|format(promise.progress_percentage) }}%
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     style="width: {{ promise.progress_percentage }}%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No promises found</h5>
+                        <p class="text-muted">Start by <a href="{{ url_for('add_promise') }}">adding a new promise</a>.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusData = {{ analytics.promises_by_status | tojson }};
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(statusData),
+            datasets: [{
+                data: Object.values(statusData),
+                backgroundColor: [
+                    '#28a745', // Fulfilled - Green
+                    '#007bff', // In Progress - Blue  
+                    '#ffc107', // Not Started - Yellow
+                    '#17a2b8', // Partially Fulfilled - Cyan
+                    '#dc3545', // Broken - Red
+                    '#6c757d', // Stalled - Gray
+                    '#fd7e14'  // Compromised - Orange
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = {{ analytics.promises_by_category | tojson }};
+    new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(categoryData),
+            datasets: [{
+                label: 'Number of Promises',
+                data: Object.values(categoryData),
+                backgroundColor: '#007bff',
+                borderColor: '#0056b3',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

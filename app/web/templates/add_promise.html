@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Add Promise - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Add New Promise
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Promise Text *</label>
+                        <textarea class="form-control" id="text" name="text" rows="4" 
+                                  placeholder="Enter the campaign promise text..." required></textarea>
+                        <div class="form-text">Enter the full text of the campaign promise.</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category">
+                                    {% for category in categories %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="priority" class="form-label">Priority</label>
+                                <select class="form-select" id="priority" name="priority">
+                                    <option value="1">1 - Low</option>
+                                    <option value="2">2 - Below Average</option>
+                                    <option value="3" selected>3 - Average</option>
+                                    <option value="4">4 - High</option>
+                                    <option value="5">5 - Critical</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="source_title" class="form-label">Source Title</label>
+                        <input type="text" class="form-control" id="source_title" name="source_title" 
+                               placeholder="e.g., Campaign Rally - Iowa">
+                        <div class="form-text">Title or description of where this promise was made.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="source_url" class="form-label">Source URL</label>
+                        <input type="url" class="form-control" id="source_url" name="source_url" 
+                               placeholder="https://example.com/source">
+                        <div class="form-text">URL link to the source (optional).</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Additional context or notes about this promise..."></textarea>
+                        <div class="form-text">Any additional context or background information.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('promises') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Add Promise
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
