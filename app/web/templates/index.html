@@ -161,12 +161,8 @@
                                             </a>
                                         </h6>
                                         <div class="mb-2">
-                                            <span class="badge bg-secondary me-2">{{ promise.category }}</span>
-                                            <span class="badge status-badge
-                                                {% if promise.status.value == 'Fulfilled' %}bg-success
-                                                {% elif promise.status.value == 'In Progress' %}bg-primary
-                                                {% elif promise.status.value == 'Broken' %}bg-danger
-                                                {% else %}bg-warning text-dark{% endif %}">
+                                            <span class="badge" style="background: linear-gradient(135deg, #424242 0%, #757575 100%); color: #FFFFFF; font-weight: 600; padding: 0.5em 0.75em; border-radius: 15px; border: 1px solid #E0E0E0;">{{ promise.category }}</span>
+                                            <span class="badge status-badge" style="background: {{ '#000000' if promise.status.value == 'Fulfilled' else '#424242' if promise.status.value == 'In Progress' else '#9E9E9E' if promise.status.value == 'Broken' else '#757575' }}; color: {{ '#FFFFFF' if promise.status.value in ['Fulfilled', 'In Progress'] else '#000000' if promise.status.value == 'Broken' else '#FFFFFF' }}; font-weight: 600; padding: 0.5em 0.75em; border-radius: 15px; border: 1px solid #E0E0E0;">
                                                 {{ promise.status.value }}
                                             </span>
                                         </div>
@@ -218,14 +214,16 @@
             datasets: [{
                 data: Object.values(statusData),
                 backgroundColor: [
-                    '#28a745', // Fulfilled - Green
-                    '#007bff', // In Progress - Blue  
-                    '#ffc107', // Not Started - Yellow
-                    '#17a2b8', // Partially Fulfilled - Cyan
-                    '#dc3545', // Broken - Red
-                    '#6c757d', // Stalled - Gray
-                    '#fd7e14'  // Compromised - Orange
-                ]
+                    '#000000', // Fulfilled - Black
+                    '#424242', // In Progress - Dark Gray  
+                    '#757575', // Not Started - Medium Gray
+                    '#9E9E9E', // Partially Fulfilled - Light Gray
+                    '#BDBDBD', // Broken - Lighter Gray
+                    '#E0E0E0', // Stalled - Very Light Gray
+                    '#F5F5F5'  // Compromised - Off White
+                ],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
             }]
         },
         options: {
@@ -249,9 +247,9 @@
             datasets: [{
                 label: 'Number of Promises',
                 data: Object.values(categoryData),
-                backgroundColor: '#007bff',
-                borderColor: '#0056b3',
-                borderWidth: 1
+                backgroundColor: '#424242',
+                borderColor: '#000000',
+                borderWidth: 2
             }]
         },
         options: {

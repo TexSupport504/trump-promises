@@ -162,10 +162,10 @@
                                     <div class="col-md-8">
                                         <strong>{{ promise.text[:80] }}{% if promise.text|length > 80 %}...{% endif %}</strong>
                                         <br>
-                                        <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'secondary' }}">
+                                        <span class="badge" style="background: {{ '#000000' if promise.status == 'Fulfilled' else '#424242' if promise.status == 'In Progress' else '#757575' }}; color: {{ '#FFFFFF' if promise.status in ['Fulfilled', 'In Progress'] else '#FFFFFF' }}; font-weight: 600; padding: 0.5em 0.75em; border-radius: 15px; border: 1px solid #E0E0E0;">
                                             {{ promise.status }}
                                         </span>
-                                        <span class="badge badge-info">{{ promise.category }}</span>
+                                        <span class="badge" style="background: linear-gradient(135deg, #424242 0%, #757575 100%); color: #FFFFFF; font-weight: 600; padding: 0.5em 0.75em; border-radius: 15px; border: 1px solid #E0E0E0;">{{ promise.category }}</span>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="progress" style="height: 20px;">

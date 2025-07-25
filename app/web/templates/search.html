@@ -92,15 +92,15 @@
                                                 <span class="badge" style="background: linear-gradient(135deg, #000000 0%, #424242 100%); color: white; font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);">{{ promise.category }}</span>
                                             </td>
                                             <td>
-                                                <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'info' if promise.status == 'Partially Fulfilled' else 'danger' if promise.status == 'Broken' else 'secondary' }}" style="font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px;">
+                                                <span class="badge" style="background: {{ '#000000' if promise.status == 'Fulfilled' else '#424242' if promise.status == 'In Progress' else '#757575' if promise.status == 'Partially Fulfilled' else '#9E9E9E' if promise.status == 'Broken' else '#BDBDBD' }}; color: {{ '#FFFFFF' if promise.status in ['Fulfilled', 'In Progress', 'Partially Fulfilled'] else '#000000' }}; font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px; border: 1px solid #E0E0E0;">
                                                     {{ promise.status }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="progress" style="width: 80px; height: 20px;">
-                                                    <div class="progress-bar {{ 'bg-success' if promise.progress_percentage >= 75 else 'bg-warning' if promise.progress_percentage >= 25 else 'bg-info' }}" 
+                                                    <div class="progress-bar" 
                                                          role="progressbar" 
-                                                         style="width: {{ promise.progress_percentage }}%"
+                                                         style="width: {{ promise.progress_percentage }}%; background-color: {{ '#424242' if promise.progress_percentage >= 75 else '#757575' if promise.progress_percentage >= 25 else '#9E9E9E' }};"
                                                          aria-valuenow="{{ promise.progress_percentage }}" 
                                                          aria-valuemin="0" 
                                                          aria-valuemax="100">
@@ -109,7 +109,7 @@
                                                 <small class="text-muted">{{ promise.progress_percentage }}%</small>
                                             </td>
                                             <td>
-                                                <span class="badge badge-{{ 'danger' if promise.priority == 5 else 'warning' if promise.priority == 4 else 'info' if promise.priority == 3 else 'secondary' }}">
+                                                <span class="badge" style="background-color: {{ '#000000' if promise.priority == 5 else '#424242' if promise.priority == 4 else '#757575' if promise.priority == 3 else '#BDBDBD' }}; color: {{ '#FFFFFF' if promise.priority >= 3 else '#000000' }}; font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px; border: 1px solid #E0E0E0;">
                                                     P{{ promise.priority }}
                                                 </span>
                                             </td>
@@ -230,6 +230,17 @@
 
 .progress {
     background-color: #F5F5F5;
+}
+
+/* Light theme tag badges - Pure monochrome */
+.tag-badge {
+    background: linear-gradient(135deg, #424242 0%, #757575 100%) !important;
+    color: #FFFFFF !important;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 15px;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(66, 66, 66, 0.3);
 }
 
 /* Dark theme search page badges - Pure monochrome */

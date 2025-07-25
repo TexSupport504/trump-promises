@@ -72,9 +72,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">Fulfillment Rate:</small>
                         <div class="progress" style="width: 100px; height: 20px;">
-                            <div class="progress-bar {{ 'bg-success' if category.fulfillment_rate >= 75 else 'bg-warning' if category.fulfillment_rate >= 25 else 'bg-danger' }}" 
+                            <div class="progress-bar" 
                                  role="progressbar" 
-                                 style="width: {{ category.fulfillment_rate }}%"
+                                 style="width: {{ category.fulfillment_rate }}%; background-color: {{ '#424242' if category.fulfillment_rate >= 75 else '#757575' if category.fulfillment_rate >= 25 else '#9E9E9E' }};"
                                  aria-valuenow="{{ category.fulfillment_rate }}" 
                                  aria-valuemin="0" 
                                  aria-valuemax="100">
