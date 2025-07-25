@@ -11,6 +11,7 @@ from ..models import Promise, Source, PromiseStatus, SourceType
 from ..analyzer import PromiseAnalyzer
 from config import Config
 from .link_validation_routes import add_link_validation_routes
+from .analytics_routes import add_analytics_routes
 
 
 def create_app() -> Flask:
@@ -26,7 +27,10 @@ def create_app() -> Flask:
     def index():
         """Home page with dashboard."""
         analytics = analyzer.generate_analytics_report()
-        recent_promises = db_manager.get_all_promises()[:10]  # Get 10 most recent
+        
+        # Get all promises and sort by completion percentage (highest first)
+        all_promises = db_manager.get_all_promises()
+        recent_promises = sorted(all_promises, key=lambda p: p.progress_percentage, reverse=True)[:10]
         
         return render_template('index.html', 
                              analytics=analytics,
@@ -317,5 +321,8 @@ def create_app() -> Flask:
     
     # Add link validation routes
     add_link_validation_routes(app, db_manager)
+    
+    # Add analytics routes
+    add_analytics_routes(app, db_manager)
     
     return app

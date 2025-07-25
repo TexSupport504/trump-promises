@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Advanced Analytics - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Advanced Analytics Dashboard</h1>
+            
+            <!-- Executive Summary Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Executive Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Overall Progress</h5>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ comparative_data.summary_metrics.average_progress }}%">
+                                    {{ comparative_data.summary_metrics.average_progress }}%
+                                </div>
+                            </div>
+                            <p><strong>Total Promises:</strong> {{ comparative_data.summary_metrics.total_promises }}</p>
+                            <p><strong>Completion Rate:</strong> {{ comparative_data.summary_metrics.completion_rate }}%</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Key Metrics</h5>
+                            <p><strong>High Priority Promises:</strong> {{ comparative_data.summary_metrics.high_priority_count }}</p>
+                            <p><strong>Stalled Promises:</strong> {{ comparative_data.summary_metrics.stalled_count }}</p>
+                            <p><strong>Most Active Category:</strong> {{ comparative_data.summary_metrics.most_active_category }}</p>
+                            <p><strong>Best Performing Category:</strong> {{ comparative_data.summary_metrics.highest_performing_category }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Performance -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Category Performance</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for category, data in comparative_data.category_comparison.items() %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ category }}</h5>
+                                    <p class="card-text">
+                                        <strong>Total:</strong> {{ data.total_promises }}<br>
+                                        <strong>Avg Progress:</strong> {{ data.avg_progress }}%<br>
+                                        <strong>Completion Rate:</strong> {{ data.completion_rate }}%
+                                    </p>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ data.avg_progress }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Status Distribution -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Promise Status Distribution</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for status, data in comparative_data.status_distribution.items() %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="text-center">
+                                <h4 class="text-primary">{{ data.count }}</h4>
+                                <p class="mb-1">{{ status }}</p>
+                                <small class="text-muted">{{ data.percentage }}%</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Distribution -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Progress Distribution</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for range, data in comparative_data.progress_distribution.items() %}
+                        <div class="col-md-2 col-sm-4 mb-3">
+                            <div class="text-center">
+                                <h5 class="text-info">{{ data.count }}</h5>
+                                <p class="mb-1">{{ range }}</p>
+                                <small class="text-muted">{{ data.percentage }}%</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Priority Analysis -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Priority Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for priority, data in comparative_data.priority_comparison.items() %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ priority }}</h5>
+                                    <p class="card-text">
+                                        <strong>Total:</strong> {{ data.total_promises }}<br>
+                                        <strong>Avg Progress:</strong> {{ data.avg_progress }}%<br>
+                                        <strong>Completion:</strong> {{ data.completion_rate }}%
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Summary -->
+            {% if timeline_data.trends %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Progress Trends</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Daily Avg Progress</h5>
+                            <p class="h4 text-success">{{ timeline_data.trends.daily_avg_progress }}%</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Weekly Momentum</h5>
+                            <p class="h4 text-info">{{ timeline_data.trends.weekly_momentum }}%</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Completion Velocity</h5>
+                            <p class="h4 text-warning">{{ timeline_data.trends.completion_velocity }} per month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Action Buttons -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Analytics Actions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="/analytics/recommendations" class="btn btn-primary btn-block">
+                                View Recommendations
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/analytics/export?format=json" class="btn btn-info btn-block">
+                                Export JSON
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/analytics/export?format=csv" class="btn btn-success btn-block">
+                                Export CSV
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/analytics/export?format=html" class="btn btn-warning btn-block">
+                                Export HTML
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add some interactive features
+document.addEventListener('DOMContentLoaded', function() {
+    // Add tooltips or other interactive elements as needed
+    console.log('Advanced Analytics Dashboard loaded');
+});
+</script>
+
+{% endblock %}

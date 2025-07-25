@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Recommendations - Trump Promises Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Analytics Recommendations</h1>
+            
+            <!-- Executive Summary -->
+            {% if summary %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Executive Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Total Promises:</strong> {{ summary.total_promises }}</p>
+                            <p><strong>Completion Rate:</strong> {{ summary.completion_rate }}%</p>
+                            <p><strong>Average Progress:</strong> {{ summary.average_progress }}%</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>High Priority Incomplete:</strong> {{ summary.high_priority_incomplete }}</p>
+                            <p><strong>Stalled Promises:</strong> {{ summary.stalled_promises }}</p>
+                            <p><strong>Best Category:</strong> {{ summary.best_performing_category }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Recommendations -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Actionable Recommendations</h3>
+                </div>
+                <div class="card-body">
+                    {% if recommendations %}
+                    {% for rec in recommendations %}
+                    <div class="alert 
+                        {% if rec.priority == 'High' %}alert-danger
+                        {% elif rec.priority == 'Medium' %}alert-warning
+                        {% else %}alert-info{% endif %} mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="alert-heading">
+                                    <span class="badge 
+                                        {% if rec.priority == 'High' %}badge-danger
+                                        {% elif rec.priority == 'Medium' %}badge-warning
+                                        {% else %}badge-info{% endif %} mr-2">
+                                        {{ rec.priority }}
+                                    </span>
+                                    {{ rec.title }}
+                                </h5>
+                                <p class="mb-0">{{ rec.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="alert alert-info">
+                        <h5>No specific recommendations at this time</h5>
+                        <p>The current promise tracking appears to be on track. Continue monitoring progress and check back regularly for new insights.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="/analytics/advanced" class="btn btn-primary btn-block">
+                                View Full Analytics
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/promises?status=stalled" class="btn btn-warning btn-block">
+                                View Stalled Promises
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/promises?priority=high" class="btn btn-danger btn-block">
+                                High Priority Promises
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="/" class="btn btn-secondary btn-block">
+                                Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
