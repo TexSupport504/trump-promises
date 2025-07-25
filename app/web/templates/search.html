@@ -80,7 +80,7 @@
                                                 {% if promise.tags %}
                                                     <div class="mt-1">
                                                         {% for tag in promise.tags[:3] %}
-                                                            <span class="badge badge-light border me-1">{{ tag }}</span>
+                                                            <span class="badge tag-badge me-1">{{ tag }}</span>
                                                         {% endfor %}
                                                         {% if promise.tags|length > 3 %}
                                                             <span class="text-muted">+{{ promise.tags|length - 3 }} more</span>
@@ -89,10 +89,10 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                <span class="badge badge-info">{{ promise.category }}</span>
+                                                <span class="badge" style="background: linear-gradient(135deg, #000000 0%, #424242 100%); color: white; font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);">{{ promise.category }}</span>
                                             </td>
                                             <td>
-                                                <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'info' if promise.status == 'Partially Fulfilled' else 'danger' if promise.status == 'Broken' else 'secondary' }}">
+                                                <span class="badge badge-{{ 'success' if promise.status == 'Fulfilled' else 'warning' if promise.status == 'In Progress' else 'info' if promise.status == 'Partially Fulfilled' else 'danger' if promise.status == 'Broken' else 'secondary' }}" style="font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px;">
                                                     {{ promise.status }}
                                                 </span>
                                             </td>
@@ -229,7 +229,21 @@
 }
 
 .progress {
-    background-color: #e9ecef;
+    background-color: #F5F5F5;
+}
+
+/* Dark theme search page badges - Pure monochrome */
+[data-theme="dark"] .badge {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Dark theme tag badges - Pure monochrome */
+[data-theme="dark"] .tag-badge {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.4) !important;
 }
 </style>
 {% endblock %}

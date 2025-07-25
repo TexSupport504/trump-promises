@@ -24,7 +24,7 @@
                             <i class="fas fa-folder text-primary me-2"></i>
                             {{ category.name }}
                         </h5>
-                        <span class="badge badge-primary">{{ category.count }}</span>
+                        <span class="badge" style="background: linear-gradient(135deg, #000000 0%, #424242 100%); color: white; font-weight: 600; padding: 0.5em 0.75em; border-radius: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);">{{ category.count }}</span>
                     </div>
                     
                     <p class="card-text text-muted">
@@ -143,4 +143,13 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Dark theme category badges - Pure monochrome */
+[data-theme="dark"] .badge {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.4) !important;
+}
+</style>
 {% endblock %}

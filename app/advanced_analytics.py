@@ -55,7 +55,7 @@ class AdvancedAnalytics:
             
             promise_timeline = {
                 'promise_id': promise.id,
-                'title': promise.title,
+                'title': promise.text,
                 'category': promise.category,
                 'current_progress': promise.progress_percentage,
                 'timeline_points': []
@@ -66,7 +66,7 @@ class AdvancedAnalytics:
                 'date': promise.created_at.isoformat() if promise.created_at else datetime.now().isoformat(),
                 'progress': 0,
                 'event': 'Promise Created',
-                'description': f"Promise '{promise.title}' was created"
+                'description': f"Promise '{promise.text}' was created"
             })
             
             # Add progress updates
@@ -417,7 +417,7 @@ class AdvancedAnalytics:
                 'progress': promise.progress_percentage,
                 'category': promise.category,
                 'priority': promise.priority,
-                'title': promise.title
+                'title': promise.text
             })
         
         return sorted(timeline_points, key=lambda x: x['date'])
@@ -429,7 +429,7 @@ class AdvancedAnalytics:
                 'priority': promise.priority,
                 'progress': promise.progress_percentage,
                 'category': promise.category,
-                'title': promise.title,
+                'title': promise.text,
                 'status': promise.status.value
             }
             for promise in promises
@@ -680,19 +680,16 @@ class AdvancedAnalytics:
         
         return recommendations
     
-    def __init__(self, db_manager: DatabaseManager):
-        self.db = db_manager
-    
     def generate_progress_timeline(self, promise_id: Optional[int] = None) -> Dict[str, Any]:
         """Generate timeline data for promise progress tracking."""
         
         if promise_id:
             # Single promise timeline
-            promise = self.db.get_promise(promise_id)
+            promise = self.db_manager.get_promise(promise_id)
             if not promise:
                 return {}
             
-            progress_updates = self.db.get_progress_updates(promise_id)
+            progress_updates = self.db_manager.get_progress_updates(promise_id)
             
             timeline_data = {
                 'promise_id': promise_id,
@@ -714,13 +711,13 @@ class AdvancedAnalytics:
         
         else:
             # Overall progress timeline
-            promises = self.db.get_all_promises()
+            promises = self.db_manager.get_all_promises()
             
             # Group by month for overall trends
             monthly_progress = defaultdict(list)
             
             for promise in promises:
-                updates = self.db.get_progress_updates(promise.id)
+                updates = self.db_manager.get_progress_updates(promise.id)
                 for update in updates:
                     month_key = update.date.strftime('%Y-%m')
                     monthly_progress[month_key].append(update.progress_percentage)
@@ -741,10 +738,9 @@ class AdvancedAnalytics:
             
             return timeline_data
     
-    def generate_comparative_analysis(self) -> Dict[str, Any]:
-        """Generate comparative analysis across categories, priorities, and timeframes."""
+
         
-        promises = self.db.get_all_promises()
+        promises = self.db_manager.get_all_promises()
         
         # Category comparison
         category_stats = defaultdict(lambda: {
@@ -826,7 +822,7 @@ class AdvancedAnalytics:
     def generate_advanced_visualizations(self) -> Dict[str, Any]:
         """Generate data for advanced visualizations."""
         
-        promises = self.db.get_all_promises()
+        promises = self.db_manager.get_all_promises()
         
         # Progress distribution histogram
         progress_ranges = {
@@ -909,7 +905,7 @@ class AdvancedAnalytics:
     def _generate_executive_summary(self) -> Dict[str, Any]:
         """Generate executive summary of promise tracking."""
         
-        promises = self.db.get_all_promises()
+        promises = self.db_manager.get_all_promises()
         
         total_promises = len(promises)
         fulfilled_count = sum(1 for p in promises if p.status == PromiseStatus.FULFILLED)
@@ -937,7 +933,7 @@ class AdvancedAnalytics:
     def _generate_recommendations(self) -> List[Dict[str, str]]:
         """Generate actionable recommendations based on data analysis."""
         
-        promises = self.db.get_all_promises()
+        promises = self.db_manager.get_all_promises()
         comparative_data = self.generate_comparative_analysis()
         
         recommendations = []

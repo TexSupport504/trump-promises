@@ -26,21 +26,46 @@ def create_app() -> Flask:
     @app.route('/')
     def index():
         """Home page with dashboard."""
+        # Get sorting parameters for recent promises section
+        sort_by = request.args.get('sort_by', 'progress')  # Default sort by progress for dashboard
+        sort_order = request.args.get('sort_order', 'desc')  # Default descending
+        
         analytics = analyzer.generate_analytics_report()
         
-        # Get all promises and sort by completion percentage (highest first)
+        # Get all promises and apply sorting
         all_promises = db_manager.get_all_promises()
-        recent_promises = sorted(all_promises, key=lambda p: p.progress_percentage, reverse=True)[:10]
+        
+        # Apply sorting to all promises
+        if sort_by == 'progress':
+            all_promises.sort(key=lambda p: p.progress_percentage, reverse=(sort_order == 'desc'))
+        elif sort_by == 'priority':
+            all_promises.sort(key=lambda p: p.priority, reverse=(sort_order == 'desc'))
+        elif sort_by == 'category':
+            all_promises.sort(key=lambda p: p.category, reverse=(sort_order == 'desc'))
+        elif sort_by == 'status':
+            all_promises.sort(key=lambda p: p.status.value, reverse=(sort_order == 'desc'))
+        elif sort_by == 'created_at':
+            all_promises.sort(key=lambda p: p.created_at or '', reverse=(sort_order == 'desc'))
+        else:
+            # Default to progress if invalid sort_by
+            all_promises.sort(key=lambda p: p.progress_percentage, reverse=(sort_order == 'desc'))
+        
+        # Get top 10 for dashboard display
+        recent_promises = all_promises[:10]
         
         return render_template('index.html', 
                              analytics=analytics,
-                             recent_promises=recent_promises)
+                             recent_promises=recent_promises,
+                             current_sort_by=sort_by,
+                             current_sort_order=sort_order)
     
     @app.route('/promises')
     def promises():
-        """List all promises with filtering options."""
+        """List all promises with filtering and sorting options."""
         category = request.args.get('category')
         status = request.args.get('status')
+        sort_by = request.args.get('sort_by', 'created_at')  # Default sort by creation date
+        sort_order = request.args.get('sort_order', 'desc')  # Default descending
         page = int(request.args.get('page', 1))
         per_page = 20
         
@@ -54,6 +79,21 @@ def create_app() -> Flask:
         
         # Get filtered promises
         all_promises = db_manager.get_all_promises(category=category, status=status_filter)
+        
+        # Apply sorting
+        if sort_by == 'progress':
+            all_promises.sort(key=lambda p: p.progress_percentage, reverse=(sort_order == 'desc'))
+        elif sort_by == 'priority':
+            all_promises.sort(key=lambda p: p.priority, reverse=(sort_order == 'desc'))
+        elif sort_by == 'category':
+            all_promises.sort(key=lambda p: p.category, reverse=(sort_order == 'desc'))
+        elif sort_by == 'status':
+            all_promises.sort(key=lambda p: p.status.value, reverse=(sort_order == 'desc'))
+        elif sort_by == 'created_at':
+            all_promises.sort(key=lambda p: p.created_at or '', reverse=(sort_order == 'desc'))
+        else:
+            # Default to creation date if invalid sort_by
+            all_promises.sort(key=lambda p: p.created_at or '', reverse=(sort_order == 'desc'))
         
         # Simple pagination
         start_idx = (page - 1) * per_page
@@ -71,6 +111,8 @@ def create_app() -> Flask:
                              statuses=[s.value for s in PromiseStatus],
                              current_category=category,
                              current_status=status,
+                             current_sort_by=sort_by,
+                             current_sort_order=sort_order,
                              page=page,
                              total_pages=total_pages,
                              has_prev=has_prev,
