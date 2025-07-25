@@ -1,0 +1,384 @@
+/* 
+ * Black & White Dark Mode Theme
+ * Trump Promises Tracker
+ * Designed for high contrast and accessibility
+ */
+
+:root {
+  /* Color Variables */
+  --bg-primary: #000000;      /* Pure black */
+  --bg-secondary: #1a1a1a;    /* Dark gray */
+  --bg-tertiary: #2d2d2d;     /* Medium gray */
+  --text-primary: #ffffff;     /* Pure white */
+  --text-secondary: #e0e0e0;   /* Light gray */
+  --text-muted: #b0b0b0;      /* Medium light gray */
+  --accent-primary: #ffffff;   /* White accent */
+  --accent-secondary: #808080; /* Gray accent */
+  --border-color: #404040;     /* Dark border */
+  --shadow-light: rgba(255, 255, 255, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+/* Global Overrides */
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Navigation */
+.navbar {
+  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-secondary) !important;
+  transition: all 0.3s ease;
+  border-radius: 0.375rem;
+  margin: 0 0.25rem;
+  padding: 0.5rem 1rem !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary);
+  transform: translateY(-1px);
+}
+
+.navbar-toggler {
+  border-color: var(--border-color);
+}
+
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* Cards */
+.card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px var(--shadow-dark);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--shadow-dark);
+  border-color: var(--accent-secondary);
+}
+
+.card-header {
+  background-color: var(--bg-tertiary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+.card-body {
+  color: var(--text-primary) !important;
+}
+
+.card-title {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+.card-text {
+  color: var(--text-secondary) !important;
+}
+
+/* Promise Cards */
+.promise-card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.promise-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
+}
+
+.promise-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--text-primary);
+  box-shadow: 0 10px 30px var(--shadow-dark);
+}
+
+/* Status Badges */
+.status-badge {
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+}
+
+.badge {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+/* Progress Elements */
+.progress {
+  background-color: var(--bg-tertiary) !important;
+  border-radius: 1rem;
+  height: 0.75rem;
+}
+
+.progress-bar {
+  background-color: var(--text-primary) !important;
+  border-radius: 1rem;
+}
+
+.progress-circle {
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary) !important;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background-color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+  color: var(--bg-primary) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-secondary) !important;
+  border-color: var(--accent-secondary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.btn-outline-primary {
+  color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--text-primary) !important;
+  color: var(--bg-primary) !important;
+}
+
+.btn-outline-light {
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.btn-outline-light:hover {
+  background-color: var(--text-primary) !important;
+  color: var(--bg-primary) !important;
+  border-color: var(--text-primary) !important;
+}
+
+/* Forms */
+.form-control {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 0.5rem;
+}
+
+.form-control:focus {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--text-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+  color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.form-select {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.form-label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
+/* Tables */
+.table {
+  color: var(--text-primary) !important;
+}
+
+.table-dark {
+  --bs-table-bg: var(--bg-secondary);
+  --bs-table-border-color: var(--border-color);
+}
+
+.table tbody tr:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.alert-success {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--text-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.alert-danger {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--accent-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 25px var(--shadow-dark);
+}
+
+.dropdown-item {
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Footer */
+footer {
+  background-color: var(--bg-secondary) !important;
+  border-top: 1px solid var(--border-color);
+  margin-top: 4rem !important;
+}
+
+footer h5 {
+  color: var(--text-primary) !important;
+}
+
+footer p {
+  color: var(--text-secondary) !important;
+}
+
+/* Category Colors - Monochrome Approach */
+.category-Economy { 
+  border-left: 4px solid var(--text-primary); 
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+}
+.category-Immigration { 
+  border-left: 4px solid var(--accent-secondary); 
+  background: linear-gradient(90deg, rgba(128,128,128,0.05) 0%, transparent 100%);
+}
+.category-Healthcare { 
+  border-left: 4px solid var(--text-primary); 
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+}
+.category-Foreign-Policy { 
+  border-left: 4px solid var(--accent-secondary); 
+  background: linear-gradient(90deg, rgba(128,128,128,0.05) 0%, transparent 100%);
+}
+.category-Defense { 
+  border-left: 4px solid var(--text-primary); 
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+}
+.category-Energy { 
+  border-left: 4px solid var(--accent-secondary); 
+  background: linear-gradient(90deg, rgba(128,128,128,0.05) 0%, transparent 100%);
+}
+.category-Other { 
+  border-left: 4px solid var(--border-color); 
+  background: linear-gradient(90deg, rgba(64,64,64,0.05) 0%, transparent 100%);
+}
+
+/* Icons */
+.fas, .far, .fab {
+  color: var(--text-secondary);
+}
+
+/* Custom Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: slideInUp 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .btn {
+    font-size: 0.8rem;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
+    --bg-tertiary: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --border-color: #ffffff;
+  }
+}
+
+/* Focus Indicators for Accessibility */
+*:focus {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
